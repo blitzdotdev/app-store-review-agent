@@ -4,22 +4,32 @@ AI agent that role-plays as an Apple App Store Reviewer. Catches rejections befo
 
 ## What It Does
 
-Tell your AI coding agent to **"review my app"** and Reviewer will inspect your Xcode project the same way an Apple reviewer would — checking source code, entitlements, privacy manifests, metadata, and configuration against 100+ App Store Review Guidelines.
+Say **"review my app"** and Reviewer spawns as an agent that inspects your Xcode project the same way an Apple reviewer would — checking source code, entitlements, privacy manifests, metadata, and configuration against 100+ App Store Review Guidelines.
 
 It finds the violations, cites the exact guideline, points to the offending file, and tells you how to fix it. Then it offers to fix what it can automatically.
 
-No external CLI tools required. Works with any AI coding agent that supports skills (Claude Code, Codex, OpenCode, etc.).
+No external CLI tools required.
 
 ## Install
 
-### Claude Code
+### Claude Code (recommended)
+
+Clone into your project's `.claude/` directory:
 
 ```bash
 cd your-xcode-project
-git submodule add https://github.com/blitzdotdev/app-store-review-agent.git .claude/skills/reviewer
+git submodule add https://github.com/blitzdotdev/app-store-review-agent.git .claude/app-store-review-agent
 ```
 
-Claude Code automatically picks up `SKILL.md` files inside `.claude/skills/`.
+This gives Claude Code the `agents/reviewer.md` agent definition and all reference materials. The agent is immediately available.
+
+Then just say:
+
+```
+review my app
+```
+
+Claude Code will spawn the Reviewer agent automatically.
 
 ### Codex / OpenCode / Other Agents
 
@@ -29,7 +39,7 @@ Clone or submodule into your project root:
 git submodule add https://github.com/blitzdotdev/app-store-review-agent.git reviewer
 ```
 
-Then point your agent at the `SKILL.md`:
+Then point your agent at the `SKILL.md` (included for compatibility):
 
 ```
 @reviewer/SKILL.md review my app
@@ -45,19 +55,32 @@ Just paste this into your conversation:
 Read the file reviewer/SKILL.md and follow its instructions to review my app.
 ```
 
-## Quick Start
-
-From your Xcode project directory:
+## Repo Structure
 
 ```
-review my app
+app-store-review-agent/
+├── .claude-plugin/
+│   └── plugin.json              # Claude Code plugin metadata
+├── agents/
+│   └── reviewer.md              # Claude Code agent definition (spawns as subagent)
+├── references/
+│   ├── guidelines/
+│   │   ├── README.md            # Complete index of 100+ Apple guidelines
+│   │   └── by-app-type/        # 10 app-type specific checklists
+│   └── rules/
+│       ├── metadata/            # Competitor terms, trademarks, China, etc.
+│       ├── subscription/        # ToS/PP, misleading pricing
+│       ├── privacy/             # Privacy manifest, unnecessary data
+│       ├── design/              # SIWA, minimum functionality
+│       └── entitlements/        # Unused entitlements
+├── SKILL.md                     # Generic skill file (Codex, OpenCode compat)
+├── README.md
+└── LICENSE
 ```
-
-That's it. Reviewer figures out what kind of app you have, loads the relevant guidelines, and does a full review.
 
 ## What It Checks
 
-### Metadata (`references/rules/metadata/`)
+### Metadata
 
 | Rule | Guideline | What It Catches |
 |------|-----------|----------------|
@@ -67,28 +90,28 @@ That's it. Reviewer figures out what kind of app you have, loads the relevant gu
 | [accurate_metadata](./references/rules/metadata/accurate_metadata.md) | 2.3.4 | Device frames in app preview videos |
 | [subscription_metadata](./references/rules/metadata/subscription_metadata.md) | 3.1.2 | Missing ToS/EULA and Privacy Policy links |
 
-### Subscriptions (`references/rules/subscription/`)
+### Subscriptions
 
 | Rule | Guideline | What It Catches |
 |------|-----------|----------------|
 | [missing_tos_pp](./references/rules/subscription/missing_tos_pp.md) | 3.1.2 | No Terms or Privacy Policy in app/metadata |
 | [misleading_pricing](./references/rules/subscription/misleading_pricing.md) | 3.1.2 | Monthly price more prominent than billed amount |
 
-### Privacy (`references/rules/privacy/`)
+### Privacy
 
 | Rule | Guideline | What It Catches |
 |------|-----------|----------------|
 | [unnecessary_data](./references/rules/privacy/unnecessary_data.md) | 5.1.1 | Requiring irrelevant personal data |
 | [privacy_manifest](./references/rules/privacy/privacy_manifest.md) | 5.1.1 | Missing `PrivacyInfo.xcprivacy` |
 
-### Design (`references/rules/design/`)
+### Design
 
 | Rule | Guideline | What It Catches |
 |------|-----------|----------------|
 | [sign_in_with_apple](./references/rules/design/sign_in_with_apple.md) | 4.0 | Asking name/email after SIWA |
 | [minimum_functionality](./references/rules/design/minimum_functionality.md) | 4.2 | WebView wrappers, apps with < 3 screens, no unique value |
 
-### Entitlements (`references/rules/entitlements/`)
+### Entitlements
 
 | Rule | Guideline | What It Catches |
 |------|-----------|----------------|
@@ -96,22 +119,7 @@ That's it. Reviewer figures out what kind of app you have, loads the relevant gu
 
 ## Guideline Reference
 
-The `references/guidelines/` directory contains a complete index of all 100+ Apple Review Guidelines and 10 app-type specific checklists:
-
-| Checklist | App Type |
-|-----------|----------|
-| [all_apps.md](./references/guidelines/by-app-type/all_apps.md) | Universal (every submission) |
-| [subscription_iap.md](./references/guidelines/by-app-type/subscription_iap.md) | Subscriptions / In-App Purchases |
-| [social_ugc.md](./references/guidelines/by-app-type/social_ugc.md) | Social / User-Generated Content |
-| [kids.md](./references/guidelines/by-app-type/kids.md) | Kids Category |
-| [health_fitness.md](./references/guidelines/by-app-type/health_fitness.md) | Health, Fitness & Medical |
-| [games.md](./references/guidelines/by-app-type/games.md) | Games |
-| [macos.md](./references/guidelines/by-app-type/macos.md) | macOS / Mac App Store |
-| [ai_apps.md](./references/guidelines/by-app-type/ai_apps.md) | AI / Generative AI |
-| [crypto_finance.md](./references/guidelines/by-app-type/crypto_finance.md) | Crypto, Finance & Trading |
-| [vpn.md](./references/guidelines/by-app-type/vpn.md) | VPN & Networking |
-
-Full reference: [references/guidelines/README.md](./references/guidelines/README.md)
+Complete index of all 100+ Apple Review Guidelines and 10 app-type specific checklists in [`references/guidelines/`](./references/guidelines/).
 
 ## Adding New Rules
 
