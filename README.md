@@ -14,22 +14,21 @@ No external CLI tools required.
 
 ### Claude Code (recommended)
 
-Clone into your project's `.claude/` directory:
+One command from your Xcode project directory:
 
 ```bash
-cd your-xcode-project
-git submodule add https://github.com/blitzdotdev/app-store-review-agent.git .claude/app-store-review-agent
+curl -fsSL https://raw.githubusercontent.com/blitzdotdev/app-store-review-agent/main/install.sh | bash
 ```
 
-This gives Claude Code the `agents/reviewer.md` agent definition and all reference materials. The agent is immediately available.
+This clones the repo into `.claude/app-store-review-agent/` and symlinks the agent into `.claude/agents/` where Claude Code can find it.
 
-Then just say:
+Restart Claude Code, then say:
 
 ```
 review my app
 ```
 
-Claude Code will spawn the Reviewer agent automatically.
+Verify it's installed with `/agents` — you should see `reviewer` listed.
 
 ### Codex / OpenCode / Other Agents
 
@@ -55,27 +54,22 @@ Just paste this into your conversation:
 Read the file reviewer/SKILL.md and follow its instructions to review my app.
 ```
 
-## Repo Structure
+## What Gets Installed
 
 ```
-app-store-review-agent/
-├── .claude-plugin/
-│   └── plugin.json              # Claude Code plugin metadata
-├── agents/
-│   └── reviewer.md              # Claude Code agent definition (spawns as subagent)
-├── references/
-│   ├── guidelines/
-│   │   ├── README.md            # Complete index of 100+ Apple guidelines
-│   │   └── by-app-type/        # 10 app-type specific checklists
-│   └── rules/
-│       ├── metadata/            # Competitor terms, trademarks, China, etc.
-│       ├── subscription/        # ToS/PP, misleading pricing
-│       ├── privacy/             # Privacy manifest, unnecessary data
-│       ├── design/              # SIWA, minimum functionality
-│       └── entitlements/        # Unused entitlements
-├── SKILL.md                     # Generic skill file (Codex, OpenCode compat)
-├── README.md
-└── LICENSE
+your-project/
+└── .claude/
+    ├── agents/
+    │   └── reviewer.md → ../app-store-review-agent/agents/reviewer.md  (symlink)
+    └── app-store-review-agent/          (cloned repo)
+        ├── agents/
+        │   └── reviewer.md             # Agent definition (spawns as subagent)
+        ├── references/
+        │   ├── guidelines/             # 100+ Apple guidelines + 10 app-type checklists
+        │   └── rules/                  # Rejection pattern detection rules
+        ├── install.sh                  # 1-click installer
+        ├── SKILL.md                    # Codex/OpenCode compatibility
+        └── README.md
 ```
 
 ## What It Checks

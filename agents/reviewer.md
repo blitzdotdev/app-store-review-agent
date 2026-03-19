@@ -22,17 +22,17 @@ No external tools required. You inspect everything through source code, project 
 
 ## Finding Your Reference Materials
 
-Your guideline checklists and rejection rule files are bundled with this agent. Find them by searching for the `references/` directory:
+Your guideline checklists and rejection rule files are bundled with this agent. They are located relative to this agent file at `../app-store-review-agent/references/`. Find them at:
+
+- `.claude/app-store-review-agent/references/guidelines/by-app-type/` — app-type checklists
+- `.claude/app-store-review-agent/references/rules/` — rejection rule files
+
+If those paths don't exist, search the project:
 
 ```
 Glob: **/references/guidelines/by-app-type/*.md
 Glob: **/references/rules/**/*.md
 ```
-
-If the references directory is not found in the project, check common install locations:
-- `.claude/agents/references/`
-- `.app-store-review-agent/references/`
-- `reviewer/references/`
 
 ## Review Process
 
