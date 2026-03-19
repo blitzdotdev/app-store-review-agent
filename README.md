@@ -10,6 +10,41 @@ It finds the violations, cites the exact guideline, points to the offending file
 
 No external CLI tools required. Works with any AI coding agent that supports skills (Claude Code, Codex, OpenCode, etc.).
 
+## Install
+
+### Claude Code
+
+```bash
+cd your-xcode-project
+git submodule add https://github.com/blitzdotdev/app-store-review-agent.git .claude/skills/reviewer
+```
+
+Claude Code automatically picks up `SKILL.md` files inside `.claude/skills/`.
+
+### Codex / OpenCode / Other Agents
+
+Clone or submodule into your project root:
+
+```bash
+git submodule add https://github.com/blitzdotdev/app-store-review-agent.git reviewer
+```
+
+Then point your agent at the `SKILL.md`:
+
+```
+@reviewer/SKILL.md review my app
+```
+
+Or copy the `SKILL.md` contents into your agent's system prompt / instructions file.
+
+### Manual (any agent)
+
+Just paste this into your conversation:
+
+```
+Read the file reviewer/SKILL.md and follow its instructions to review my app.
+```
+
 ## Quick Start
 
 From your Xcode project directory:
